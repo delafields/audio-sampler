@@ -85,10 +85,13 @@ export default function Home() {
     o: () => play("o"),
     p: () => play("p"),
   });
-  
+
   const TEButton = ({ name, color, marginBump }) => {
     return (
-      <div className="flex items-center mt-4" style={{marginLeft: marginBump}}>
+      <div 
+        className="flex items-center mt-4 hover:cursor-grab" 
+        style={{marginLeft: marginBump}}
+      >
         <div className="flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
           <div 
             className="font-black rounded-full text-center w-8 py-1" 
@@ -104,7 +107,7 @@ export default function Home() {
   const TEInputs = ({ name, color }) => {
     return (
       <div className="flex flex-col font-black">
-        <label className="text-2xl hover:cursor-pointer">
+        <label className="text-2xl hover:cursor-pointer active:cursor-progress">
           <input
             name={name}
             accept="audio/*"
