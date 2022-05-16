@@ -26,6 +26,7 @@ export default function Home() {
 
   const addAudio = (e) => {
     const { target: { name, files } } = e
+    console.log(e)
     setFullAudio(prevState => ({
       ...prevState,
       [name]: {fileName: files[0].name, audioBlob: URL.createObjectURL(files[0])}
@@ -51,7 +52,9 @@ export default function Home() {
   };
 
   const play = (keyBind) => {
-    new Audio(fullAudio[keyBind].audioBlob).play()
+    if (fullAudio[keyBind].audioBlob !== "") {
+      new Audio(fullAudio[keyBind].audioBlob).play()
+    }
   }
 
   useKeyboardBindings({
@@ -60,8 +63,9 @@ export default function Home() {
     e: () => play("e"),
     i: () => play("i"),
     o: () => play("o"),
-    p: () => play("u"),
+    p: () => play("p"),
   });
+
   
   const TEButton = ({ name, color, marginBump }) => {
     return (
@@ -71,13 +75,13 @@ export default function Home() {
             {name.toUpperCase()}
           </div>
         </div>
+        {/* add if null ternary */}
         <p className="ml-2">{fullAudio[name].fileName.split(".")[0]}</p>
-        <label htmlFor="contained-button-file" className="ml-2 -rotate-90 text-2xl hover:cursor-pointer">
+        <label className="ml-2 -rotate-90 text-2xl hover:cursor-pointer">
           <input
             name={name}
             accept="audio/*"
             style={{ display: 'none' }}
-            id="contained-button-file"
             multiple
             type="file"
             onChange={addAudio}
@@ -91,6 +95,9 @@ export default function Home() {
         >
           ➱
         </a>
+        {fullAudio[name].audioBlob !== "" ? <p>Peaks here</p> : ""
+        
+        }
       </div>
     )
   }
@@ -121,6 +128,7 @@ export default function Home() {
           <TEButton name="o" color="#7A36E5" marginBump={4} />
           <TEButton name="p" color="#FAA804" marginBump={5} />
         </div>
+        {JSON.stringify(fullAudio)}
       </main>
     </div>
   )
