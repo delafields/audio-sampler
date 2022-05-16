@@ -23,7 +23,12 @@ export default function Home() {
     console.log(e)
     setFullAudio(prevState => ({
       ...prevState,
-      [name]: {fileName: files[0].name, audioBlob: URL.createObjectURL(files[0])}
+      [name]: {
+        fileName: files[0].name, 
+        audioBlob: URL.createObjectURL(files[0]),
+        color: initialAudio[name].color,
+        marginBump: initialAudio[name].marginBump
+      }
     }))
   }
 
@@ -62,7 +67,7 @@ export default function Home() {
   
   const TEButton = ({ name, color, marginBump }) => {
     return (
-      <div className="mt-4" style={{marginLeft: marginBump}}>
+      <div className="flex items-center mt-4" style={{marginLeft: marginBump}}>
         <div className="flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
           <div 
             className="font-black rounded-full text-center w-8 py-1" 
@@ -138,7 +143,7 @@ export default function Home() {
           {Object.entries(fullAudio).map(([key, { color }]) => (
             <TEInputs key={key} name={key} color={color}/>
           ))}
-          {/* {JSON.stringify(fullAudio)} */}
+          {JSON.stringify(fullAudio)}
         </div>
       </main>
     </div>
