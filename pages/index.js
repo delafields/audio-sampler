@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { useState, useEffect } from 'react'
+import axios from 'axios';
 
 export default function Home() {
 
@@ -20,7 +21,6 @@ export default function Home() {
 
   const addAudio = (e) => {
     const { target: { name, files } } = e
-    console.log(e)
     setFullAudio(prevState => ({
       ...prevState,
       [name]: {
@@ -29,8 +29,29 @@ export default function Home() {
         color: initialAudio[name].color,
         marginBump: initialAudio[name].marginBump
       }
-    }))
+    }));
+
+    // uploadFile(files[0])
   }
+
+  // unfinished s3 upload
+  // const uploadFile = async (file) => {
+  //   console.log(file.name, file.type)
+  //   let { data } = await axios.post("/api/s3/uploadFile", {
+  //     name: file.name,
+  //     type: file.type
+  //   });
+
+  //   // grab url
+  //   const url = data.url;
+
+  //   await axios.put(url, file, {
+  //     headers: {
+  //       "Content-type": file.type,
+  //       "Access-Control-Allow-Origin": "*"
+  //     }
+  //   });
+  // }
 
   const useKeyboardBindings = map => {
     useEffect(() => {
@@ -76,7 +97,6 @@ export default function Home() {
             {name.toUpperCase()}
           </div>
         </div>
-        <p className="ml-2">{fullAudio[name].fileName.split(".")[0]}</p>
       </div>
     )
   }
@@ -110,6 +130,13 @@ export default function Home() {
         >
           ⮛
         </a>
+        {
+          fullAudio[name].fileName !== "" 
+          ?
+            <p className="ml-2">{fullAudio[name].fileName.split(".")[0].slice(0,4)+"..."}</p>
+          :
+            <p className="text-black/[0]">{"x"}</p>
+        }
       </div>
     )
   }
@@ -130,6 +157,7 @@ export default function Home() {
             src="/baton.svg"
             height={20}
             width={100}
+            alt="batonl logo"
             />
         </div>
         <div className="flex items-center justify-center">
@@ -143,7 +171,7 @@ export default function Home() {
           {Object.entries(fullAudio).map(([key, { color }]) => (
             <TEInputs key={key} name={key} color={color}/>
           ))}
-          {JSON.stringify(fullAudio)}
+          {/* {JSON.stringify(fullAudio)} */}
         </div>
       </main>
     </div>
