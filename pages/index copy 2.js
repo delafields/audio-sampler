@@ -13,19 +13,25 @@ export default function Home() {
   // https://medium.com/@bretdoucette/understanding-this-setstate-name-value-a5ef7b4ea2b4
   // updating state based on input name
 
-  const [qAudio, setQAudio] = useState();
-  const [wAudio, setWAudio] = useState();
-  const [eAudio, setEAudio] = useState();
-  const [iAudio, setIAudio] = useState();
-  const [oAudio, setOAudio] = useState();
-  const [pAudio, setPAudio] = useState();
+  const initialAudio = {
+    "q": {"fileName": "", "audioBlob": ""},
+    "w": {"fileName": "", "audioBlob": ""},
+    "e": {"fileName": "", "audioBlob": ""},
+    "i": {"fileName": "", "audioBlob": ""},
+    "o": {"fileName": "", "audioBlob": ""},
+    "p": {"fileName": "", "audioBlob": ""}
+  }
 
-  const addQAudio = (e) => { setQAudio(URL.createObjectURL(e.target.files[0])); }
-  const addWAudio = (e) => { setWAudio(URL.createObjectURL(e.target.files[0])); }
-  const addEAudio = (e) => { setEAudio(URL.createObjectURL(e.target.files[0])); }
-  const addIAudio = (e) => { setIAudio(URL.createObjectURL(e.target.files[0])); }
-  const addOAudio = (e) => { setOAudio(URL.createObjectURL(e.target.files[0])); }
-  const addPAudio = (e) => { setPAudio(URL.createObjectURL(e.target.files[0])); }
+  const [fullAudio, setFullAudio] = useState(initialAudio)
+
+  const addAudio = (e) => {
+    const { target: { name, files } } = e
+    console.log(e)
+    setFullAudio(prevState => ({
+      ...prevState,
+      [name]: {fileName: files[0].name, audioBlob: URL.createObjectURL(files[0])}
+    }))
+  }
 
   const useKeyboardBindings = map => {
     useEffect(() => {
@@ -45,29 +51,50 @@ export default function Home() {
     }, [map]);
   };
 
-  const playQ = () => { new Audio(qAudio).play() }
-  const playW = () => { new Audio(wAudio).play() }
-  const playE = () => { new Audio(eAudio).play() }
-  const playI = () => { new Audio(iAudio).play() }
-  const playO = () => { new Audio(oAudio).play() }
-  const playP = () => { new Audio(pAudio).play() }
+  const play = (keyBind) => {
+    if (fullAudio[keyBind].audioBlob !== "") {
+      new Audio(fullAudio[keyBind].audioBlob).play()
+    }
+  }
 
   useKeyboardBindings({
-    // q: () => console.log("pushed q"),
-    q: () => playQ(),
-    w: () => console.log("pushed w"),
-    e: () => console.log("pushed e"),
-    i: () => console.log("pushed i"),
-    o: () => console.log("pushed o"),
-    p: () => console.log("pushed u"),
+    q: () => play("q"),
+    w: () => play("w"),
+    e: () => play("e"),
+    i: () => play("i"),
+    o: () => play("o"),
+    p: () => play("p"),
   });
-
-  const TEButton = ({ children }) => {
+  
+  const TEButton = ({ name, color, marginBump }) => {
     return (
-      <div className="flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-        <div className="font-black rounded-full text-center w-8 py-1 bg-[#5FC4E8]">
-          {children}
+      <div className="flex items-center" style={{marginLeft: 48*marginBump}}>
+        <div className="flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
+          <div className="font-black rounded-full text-center w-8 py-1" style={{backgroundColor: color}}>
+            {name.toUpperCase()}
+          </div>
         </div>
+        {/* add if null ternary */}
+        <p className="ml-2">{fullAudio[name].fileName.split(".")[0]}</p>
+        <label className="ml-2 -rotate-90 text-2xl hover:cursor-pointer">
+          <input
+            name={name}
+            accept="audio/*"
+            style={{ display: 'none' }}
+            multiple
+            type="file"
+            onChange={addAudio}
+          />
+          ➱
+        </label>
+        <a 
+          className="rotate-90 text-2xl" 
+          download={fullAudio[name].fileName} 
+          href={fullAudio[name].audioBlob}
+        >
+          ➱
+        </a>
+        {fullAudio[name].audioBlob !== "" ? <p>Peaks here</p> : ""}
       </div>
     )
   }
@@ -89,76 +116,16 @@ export default function Home() {
             height={20}
             width={100}
             />
-            <button className="-rotate-90 text-2xl">➱</button>
-            <button className="rotate-90 text-2xl">➱</button>
-            <button className=" text-2xl">⤫</button>
         </div>
         <div className="flex flex-col">
-          <div className="flex">
-          <TEButton>Q</TEButton>
-          <label htmlFor="contained-button-file" className="-rotate-90 text-2xl hover:cursor-pointer">
-              <input
-                accept="audio/*"
-                style={{ display: 'none' }}
-                id="contained-button-file"
-                multiple
-                type="file"
-                onChange={addQAudio}
-              />
-              ➱
-            </label>
-            </div>
-          <div className="ml-12 flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-            <button className="font-black rounded-full w-8 py-1 bg-[#35DE97]">
-              W
-            </button>
-          </div>
-          <div className="ml-24 flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-            <button className="font-black rounded-full w-8 py-1 bg-[#F7F8F1]">
-              E
-            </button>
-          </div>
-          <div className="ml-36 flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-            <button className="font-black rounded-full w-8 py-1 bg-[#FD6721]">
-              I
-            </button>
-          </div>
-          <div className="ml-48 flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-            <button className="font-black rounded-full w-8 py-1 bg-[#7A36E5]">
-              O
-            </button>
-          </div>
-          <div className="ml-60 flex justify-center shadow-neuouter rounded-full w-12 py-2 bg-[#f2f2f2]">
-            <button className="font-black rounded-full w-8 py-1 bg-[#FAA804]">
-              P
-            </button>
-          </div>
-
-
-          {/* <button className="bg-slate-900 floating w-72 h-72 rounded-full flex flex-col justify-center items-center text-white">
-            <label htmlFor="contained-button-file" className="m-0 w-100 flex flex-col hover:cursor-pointer">
-              <input
-                accept="audio/*"
-                style={{ display: 'none' }}
-                id="contained-button-file"
-                multiple
-                type="file"
-                onChange={() => addAudio}
-              />
-              ADD AUDIO
-              <Image
-                src="/cloudwhite.svg"
-                height={180}
-                width={180}
-              />
-            </label>
-          </button> */}
-
-          {/* <p>Select a file to upload</p>
-          <input type="file" onChange={(e) => addAudio(e)} accept="audio/*" /> */}
-
-
+          <TEButton name="q" color="#5FC4E8" marginBump={0} />
+          <TEButton name="w" color="#35DE97" marginBump={1} />
+          <TEButton name="e" color="#F7F8F1" marginBump={2} />
+          <TEButton name="i" color="#FD6721" marginBump={3} />
+          <TEButton name="o" color="#7A36E5" marginBump={4} />
+          <TEButton name="p" color="#FAA804" marginBump={5} />
         </div>
+        {JSON.stringify(fullAudio)}
       </main>
     </div>
   )
